@@ -90,7 +90,7 @@ class Renderer {
 
     //
     drawSlide0() {
-        // TODO: draw bouncing ball (sphere that changes direction whenever it hits an edge)
+        // TODO: draw bouncing ball (circle that changes direction whenever it hits an edge)
         
         
         // Following line is example of drawing a single polygon
@@ -108,7 +108,7 @@ class Renderer {
     //
     drawSlide1() {
         // TODO: draw at least 3 polygons that spin about their own centers
-        //   - have each polygon spin at a different speed
+        //   - have each polygon spin at a different speed / direction
         
         
     }
