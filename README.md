@@ -1,2 +1,2 @@
-# cg-animation2d
-2D Transforms and Animation
+# 2D Transforms and Animation
+Starter code using the HTML5 Canvas API
