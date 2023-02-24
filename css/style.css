@@ -1,0 +1,107 @@
+* {
+    margin: 0 auto;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    font-size: 62.5%;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background-color: #A8A8A8;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    font-style: normal;
+}
+
+h2 {
+    font-size: 1.6rem;
+    font-weight: normal;
+    font-style: normal;
+}
+
+p, label, input, output {
+    font-size: 1.2rem;
+}
+
+#wrapper {
+    background-color: #FFFFFF;
+    width: 960px;
+    height: 100%;
+}
+
+#content {
+    background-color: #FFFFFF;
+    width: 920px;
+    padding: 10px 10px 0px 10px;
+    text-align: center;
+}
+
+#view {
+    border: solid 1px #000000;
+    margin-top: 20px;
+    -webkit-transform: scale(1, -1);
+    -moz-transform: scale(1, -1);
+    -ms-transform: scale(1, -1);
+    -o-transform: scale(1, -1);
+    transform: scale(1, -1);
+}
+
+#slideshow {
+    position: relative;
+    left: 0;
+    top: 0;
+}
+
+#slide_label {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: rgba(0, 0, 0, 0.2);
+    position: absolute;
+    height: 50px;
+    left: 50%;
+    bottom: 2px;
+    -webkit-transform: translate(-50%, 0);
+    -moz-transform: translate(-50%, 0);
+    -ms-transform: translate(-50%, 0);
+    -o-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+}
+
+#ui {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 550px;
+    height: 30px;
+}
+
+#fps {
+    width: 175px;
+}
+
+#fps_out {
+    width: 20px;
+}
+
+.slide_arrow {
+    margin: 0px 10px;
+}
+
+.slide_arrow:active {
+    opacity: 0.65;
+}
+
+.spacer {
+    height: 10px;
+}

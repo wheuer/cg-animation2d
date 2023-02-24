@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title>2D Transforms & Animation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="application/javascript" src="scripts/matrix.js"></script>
+    <script type="application/javascript" src="scripts/transforms.js"></script>
+    <script type="application/javascript" src="scripts/renderer.js"></script>
+    <script type="application/javascript" src="scripts/slideshow.js"></script>
+</head>
+<body onload="init()">
+    <div id="wrapper">
+        <div id="content">
+            <h1>2D Transforms and Animation</h1>
+            <div id="slideshow">
+                <canvas id="view"></canvas>
+                <div id="slide_label" :style="'width: ' + view.width + 'px;'">
+                    <img class="slide_arrow" src="images/left_icon.png" alt="left arrow" height="32" @click="prevSlide" />
+                    <p>{{ slide_description[slide_idx] }}</p>
+                    <img class="slide_arrow" src="images/right_icon.png" alt="left arrow" height="32" @click="nextSlide" />
+                </div>
+            </div>
+            <br/>
+            <div class="spacer"></div>
+            <div id="ui">
+                <label for="limit_framerate">Limit Frame Rate</label>
+                <input id="limit_framerate" type="checkbox" v-model="limit_fps" />
+                <div style="width:35px;"></div>
+                <label for="fps">FPS: </label>
+                <input id="fps" type="range" min="2" max="30" step="1" v-model="fps" />
+                <output id="fps_out">{{ fps }}</output>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
