@@ -96,10 +96,10 @@ class Renderer {
         // Following line is example of drawing a single polygon
         // (this should be removed/edited after you implement the slide)
         let diamond = [
-            {x: 400, y: 150},
-            {x: 500, y: 300},
-            {x: 400, y: 450},
-            {x: 300, y: 300},
+            Vector3(400, 150, 1),
+            Vector3(500, 300, 1),
+            Vector3(400, 450, 1),
+            Vector3(300, 300, 1)
         ];
         let teal = [0, 128, 128, 255];
         this.drawConvexPolygon(diamond, teal);
@@ -131,14 +131,18 @@ class Renderer {
         
     }
     
-    // vertex_list:  array of object [{x: __, y: __}, {x: __, y: __}, ..., {x: __, y: __}]
+    // vertex_list:  array of object [Matrix(3, 1), Matrix(3, 1), ..., Matrix(3, 1)]
     // color:        array of int [R, G, B, A]
     drawConvexPolygon(vertex_list, color) {
         this.ctx.fillStyle = 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',' + (color[3] / 255) + ')';
         this.ctx.beginPath();
-        this.ctx.moveTo(vertex_list[0].x, vertex_list[0].y);
+        let x = vertex_list[0].values[0][0] / vertex_list[0].values[2][0];
+        let y = vertex_list[0].values[1][0] / vertex_list[0].values[2][0];
+        this.ctx.moveTo(x, y);
         for (let i = 1; i < vertex_list.length; i++) {
-            this.ctx.lineTo(vertex_list[i].x, vertex_list[i].y);
+            x = vertex_list[i].values[0][0] / vertex_list[i].values[2][0];
+            y = vertex_list[i].values[1][0] / vertex_list[i].values[2][0];
+            this.ctx.lineTo(x, y);
         }
         this.ctx.closePath();
         this.ctx.fill();
