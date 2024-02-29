@@ -1,55 +1,54 @@
-const { createApp } = Vue;
+import { createApp, reactive, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+import { Renderer } from './renderer.js';
 
-let app;
+let app = createApp({
+    setup() {
+        return {
+            view: reactive({
+                id: 'view',
+                width: 800,
+                height: 600
+            }),
+            renderer: ref(null),
+            slide_description: ref([
+                'Bouncing Ball',
+                'Spinning Polygons',
+                'Grow / Shrink',
+                'Fun!'
+            ]),
+            slide_idx: ref(0),
+            limit_fps: ref(false),
+            fps: ref(10)
+        };
+    },
 
-function init() {
-    app = createApp({
-        data() {
-            return {
-                view: {
-                    id: 'view',
-                    width: 800,
-                    height: 600
-                },
-                renderer: {},
-                slide_description: [
-                    "Bouncing Ball",
-                    "Spinning Polygons",
-                    "Grow / Shrink",
-                    "Fun!"
-                ],
-                slide_idx: 0,
-                limit_fps: false,
-                fps: 10
+    watch: {
+        limit_fps(new_value, old_value) {
+            this.renderer.limitFps(new_value);
+        },
+        fps(new_value, old_value) {
+            this.renderer.setFps(parseInt(new_value));
+        }
+    },
+
+    methods: {
+        prevSlide() {
+            if (this.slide_idx > 0) {
+                this.slide_idx -= 1;
+                this.renderer.setSlideIndex(this.slide_idx);
             }
         },
-        watch: {
-            limit_fps(new_value, old_value) {
-                this.renderer.limitFps(new_value);
-            },
-            fps(new_value, old_value) {
-                this.renderer.setFps(parseInt(new_value));
-            }
-        },
-        methods: {
-            prevSlide() {
-                if (this.slide_idx > 0) {
-                    this.slide_idx -= 1;
-                    this.renderer.setSlideIndex(this.slide_idx);
-                }
-            },
-            
-            nextSlide() {
-                if (this.slide_idx < this.slide_description.length - 1) {
-                    this.slide_idx += 1;
-                    this.renderer.setSlideIndex(this.slide_idx);
-                }
+        
+        nextSlide() {
+            if (this.slide_idx < this.slide_description.length - 1) {
+                this.slide_idx += 1;
+                this.renderer.setSlideIndex(this.slide_idx);
             }
         }
-    }).mount('#content');
+    }
+}).mount('#content');
     
-    app.renderer = new Renderer(app.view, app.limit_fps, app.fps);
-    window.requestAnimationFrame((timestamp) => {
-        app.renderer.animate(timestamp);
-    });
-}
+app.renderer = new Renderer(app.view, app.limit_fps, app.fps);
+window.requestAnimationFrame((timestamp) => {
+    app.renderer.animate(timestamp);
+});

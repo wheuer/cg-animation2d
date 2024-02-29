@@ -200,3 +200,5 @@ Matrix.multiply = function(matrices) {
     }
     return result;
 }
+
+export { Matrix }

@@ -1,3 +1,5 @@
+import * as CG from './transforms.js';
+
 class Renderer {
     // canvas:              object ({id: __, width: __, height: __})
     // limit_fps_flag:      bool 
@@ -12,6 +14,24 @@ class Renderer {
         this.fps = fps;
         this.start_time = null;
         this.prev_time = null;
+
+        this.models = {
+            slide0: [
+                // example model (diamond) -> should be replaced with actual model
+                {
+                    vertices: [
+                        CG.Vector3(400, 150, 1),
+                        CG.Vector3(500, 300, 1),
+                        CG.Vector3(400, 450, 1),
+                        CG.Vector3(300, 300, 1)
+                    ],
+                    transform: null
+                }
+            ],
+            slide1: [],
+            slide2: [],
+            slide3: []
+        };
     }
 
     // flag:  bool
@@ -93,16 +113,10 @@ class Renderer {
         // TODO: draw bouncing ball (circle that changes direction whenever it hits an edge)
         
         
-        // Following line is example of drawing a single polygon
+        // Following lines are example of drawing a single polygon
         // (this should be removed/edited after you implement the slide)
-        let diamond = [
-            Vector3(400, 150, 1),
-            Vector3(500, 300, 1),
-            Vector3(400, 450, 1),
-            Vector3(300, 300, 1)
-        ];
         let teal = [0, 128, 128, 255];
-        this.drawConvexPolygon(diamond, teal);
+        this.drawConvexPolygon(this.models.slide0[0].vertices, teal);
     }
 
     //
@@ -148,3 +162,5 @@ class Renderer {
         this.ctx.fill();
     }
 };
+
+export { Renderer };

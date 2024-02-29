@@ -1,6 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
-// 3x3 Transform Matrices                                                         //
+// 3x3 Transform Matrices                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
+import { Matrix } from "./matrix.js";
 
 // Set values of existing 3x3 matrix to the identity matrix
 function mat3x3Identity(mat3x3) {
@@ -30,3 +31,11 @@ function Vector3(x, y, w) {
     vec3.values = [x, y, w];
     return vec3;
 }
+
+export {
+    mat3x3Identity,
+    mat3x3Translate,
+    mat3x3Scale,
+    mat3x3Rotate,
+    Vector3
+};
