@@ -21,7 +21,7 @@ class Renderer {
                 // Ball
                 {
                     position: { x: canvas.width / 2, y: canvas.height / 2 }, // Position of center of ball, start with ball centered on window
-                    velocity: { x: 0.5, y: 0.5}, // Start with ball moving towards the top right
+                    velocity: { x: 0.5, y: 0.5 }, // Start with ball moving towards the top right
                     radius: 20,
                     color: [255, 0, 0, 255], // Red
                 }
@@ -37,7 +37,7 @@ class Renderer {
                         CG.Vector3(50, -50, 1),
                     ],
                     angular_velocity: -0.001,
-                    position: {x: 150, y: 150},
+                    position: { x: 150, y: 150 },
                     color: [255, 0, 0, 255],
                     rotate_matrix: new Matrix(3, 3), // Current rotation
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
@@ -53,7 +53,7 @@ class Renderer {
                         CG.Vector3(116 - 100, 80 - 100, 1)
                     ],
                     angular_velocity: 0.001,
-                    position: {x: 500, y: 200},
+                    position: { x: 500, y: 200 },
                     color: [66, 245, 75, 255],
                     rotate_matrix: new Matrix(3, 3), // Current rotation
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
@@ -66,14 +66,48 @@ class Renderer {
                         CG.Vector3(86.6, -50, 1)
                     ],
                     angular_velocity: -0.001,
-                    position: {x: 400, y: 400},
+                    position: { x: 400, y: 400 },
                     color: [66, 135, 245, 255],
                     rotate_matrix: new Matrix(3, 3), // Current rotation
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 }
             ],
-            slide2: [],
-            slide3: []
+            slide2: [// Spin is negative for clock-wise and positive for counter-clock wise
+                // Polygon 1
+                {
+                    vertices: [
+                        CG.Vector3(50, 50, 1),
+                        CG.Vector3(-50, 50, 1),
+                        CG.Vector3(-50, -50, 1),
+                        CG.Vector3(50, -50, 1),
+                    ],
+                    position: { x: 150, y: 150 },
+                    color: [255, 0, 0, 255],
+                    scale_factor: 1, // Initial scale factor
+                    scale_direction: 1, // Initial scale direction
+                    scale_matrix: new Matrix(3, 3), // Current scale
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Polygon 2
+                {
+                    vertices: [
+                        CG.Vector3(193 - 100, 116 - 100, 1),
+                        CG.Vector3(114 - 100, 109 - 100, 1),
+                        CG.Vector3(3 - 100, 90 - 100, 1),
+                        CG.Vector3(8 - 100, 74 - 100, 1),
+                        CG.Vector3(63 - 100, 69 - 100, 1),
+                        CG.Vector3(116 - 100, 80 - 100, 1)
+                    ],
+                    position: { x: 500, y: 200 },
+                    color: [66, 245, 75, 255],
+                    scale_factor: 1, // Initial scale factor
+                    scale_direction: 1, // Initial scale direction
+                    scale_matrix: new Matrix(3, 3), // Current scale
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+            ],
+            slide3: [
+            ]
         };
     }
 
@@ -139,7 +173,7 @@ class Renderer {
                 const ball = this.models.slide0[0];
                 let delta_x = delta_time * ball.velocity.x;
                 let delta_y = delta_time * ball.velocity.y;
-                
+
                 // Check for a collision in the X dimension
                 if (ball.position.x + delta_x <= ball.radius && ball.velocity.x < 0) {
                     // Ball is outside the positive x dimension, we need to re-position the ball inside the x dimension 
@@ -153,9 +187,9 @@ class Renderer {
                     ball.velocity.x *= -1;
                 } else {
                     // Ball is inside the x dimension, ok to set new x position
-                    ball.position.x += delta_x;                    
+                    ball.position.x += delta_x;
                 }
-                
+
                 // Check for a collision in the Y dimension
                 if (ball.position.y + delta_y <= ball.radius && ball.velocity.y < 0) {
                     // Ball is outside the negative y dimension, we need to re-position the ball inside the y dimension
@@ -178,8 +212,33 @@ class Renderer {
                     Just need to update the polygon transformation matrices based on the new time
                 */
                 for (let i = 0; i < this.models.slide1.length; i++) {
-                    CG.mat3x3Rotate(this.models.slide1[i].rotate_matrix, (time * this.models.slide1[i].angular_velocity) % (2*Math.PI));
+                    CG.mat3x3Rotate(this.models.slide1[i].rotate_matrix, (time * this.models.slide1[i].angular_velocity) % (2 * Math.PI));
                     CG.mat3x3Translate(this.models.slide1[i].translate_matrix, this.models.slide1[i].position.x, this.models.slide1[i].position.y);
+                }
+                break;
+            case 2:
+                /*
+                    Slide 0 (Growing/Shrinking Polygons)
+                    Update the polygon transformation matrices based on the new time.
+                    Once each polygon grows/shrinks to a certain size, reverse direction
+                */
+                for (let i = 0; i < this.models.slide2.length; i++) {
+                    let polygon = this.models.slide2[i];
+
+                    // Adjust scale factor based on time and direction
+                    polygon.scale_factor += polygon.scale_direction * delta_time * 0.001; // Adjust the scale factor
+
+                    // Check if scaling factor exceeds certain limits to reverse direction
+                    if (polygon.scale_factor >= 2) {
+                        polygon.scale_factor = 2;
+                        polygon.scale_direction = -1; // Reverse direction
+                    } else if (polygon.scale_factor <= 0.5) {
+                        polygon.scale_factor = 0.5;
+                        polygon.scale_direction = 1; // Reverse direction
+                    }
+
+                    CG.mat3x3Scale(polygon.scale_matrix, polygon.scale_factor, polygon.scale_factor);
+                    CG.mat3x3Translate(polygon.translate_matrix, polygon.position.x, polygon.position.y);
                 }
                 break;
             default:
@@ -232,8 +291,13 @@ class Renderer {
         // TODO: draw at least 2 polygons grow and shrink about their own centers
         //   - have each polygon grow / shrink different sizes
         //   - try at least 1 polygon that grows / shrinks non-uniformly in the x and y directions
-
-
+        for (let i = 0; i < this.models.slide2.length; i++) {
+            let renderedPolygon = [];
+            for (let j = 0; j < this.models.slide2[i].vertices.length; j++) {
+                renderedPolygon.push(Matrix.multiply([this.models.slide2[i].translate_matrix, this.models.slide2[i].scale_matrix, this.models.slide2[i].vertices[j]]));
+            }
+            this.drawConvexPolygon(renderedPolygon, this.models.slide2[i].color);
+        }
     }
 
     //
