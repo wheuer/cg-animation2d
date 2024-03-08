@@ -16,6 +16,9 @@ class Renderer {
         this.start_time = null;
         this.prev_time = null;
 
+        this.image = new Image();
+        this.image.src = 'images/galaga.png';
+
         this.models = {
             slide0: [
                 // Ball
@@ -72,7 +75,7 @@ class Renderer {
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 }
             ],
-            slide2: [// Spin is negative for clock-wise and positive for counter-clock wise
+            slide2: [
                 // Polygon 1
                 {
                     vertices: [
@@ -107,6 +110,103 @@ class Renderer {
                 },
             ],
             slide3: [
+                // Maybe a bunch of spinning polygons overlayed on a growing mass to look like some kind of entity?
+                // Add a little dude with a gun in the background who shoots at the entity
+                // Make the balls turn invisible after reaching the entity?
+
+                // Shot
+                {
+                    position: { x: 200, y: canvas.height / 2 }, // Position of center of ball, start with ball centered on window
+                    velocity: { x: 0.6, y: 0 }, // Start with ball moving towards the top right
+                    radius: 20,
+                    color: [255, 255, 0, 255], // Red
+                },
+
+                // Body
+                {
+                    vertices: [
+                        CG.Vector3(50, 50, 1),
+                        CG.Vector3(-50, 50, 1),
+                        CG.Vector3(-50, -50, 1),
+                        CG.Vector3(50, -50, 1),
+                    ],
+                    position: { x: 150, y: 150 },
+                    color: [255, 0, 0, 255],
+                    scale_factor: 1, // Initial scale factor
+                    scale_direction: 1, // Initial scale direction
+                    scale_matrix: new Matrix(3, 3), // Current scale
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Eye1
+                {
+                    vertices: [
+                        CG.Vector3(50, 50, 1),
+                        CG.Vector3(-50, 50, 1),
+                        CG.Vector3(-50, -50, 1),
+                        CG.Vector3(50, -50, 1),
+                    ],
+                    angular_velocity: -0.001,
+                    position: { x: 150, y: 150 },
+                    color: [255, 0, 0, 255],
+                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Eye2
+                {
+                    vertices: [
+                        CG.Vector3(50, 50, 1),
+                        CG.Vector3(-50, 50, 1),
+                        CG.Vector3(-50, -50, 1),
+                        CG.Vector3(50, -50, 1),
+                    ],
+                    angular_velocity: -0.001,
+                    position: { x: 150, y: 150 },
+                    color: [255, 0, 0, 255],
+                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Mouth1
+                {
+                    vertices: [
+                        CG.Vector3(50, 50, 1),
+                        CG.Vector3(-50, 50, 1),
+                        CG.Vector3(-50, -50, 1),
+                        CG.Vector3(50, -50, 1),
+                    ],
+                    angular_velocity: -0.001,
+                    position: { x: 150, y: 150 },
+                    color: [255, 0, 0, 255],
+                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Mouth2
+                {
+                    vertices: [
+                        CG.Vector3(50, 50, 1),
+                        CG.Vector3(-50, 50, 1),
+                        CG.Vector3(-50, -50, 1),
+                        CG.Vector3(50, -50, 1),
+                    ],
+                    angular_velocity: -0.001,
+                    position: { x: 150, y: 150 },
+                    color: [255, 0, 0, 255],
+                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Mouth3
+                {
+                    vertices: [
+                        CG.Vector3(50, 50, 1),
+                        CG.Vector3(-50, 50, 1),
+                        CG.Vector3(-50, -50, 1),
+                        CG.Vector3(50, -50, 1),
+                    ],
+                    angular_velocity: -0.001,
+                    position: { x: 150, y: 150 },
+                    color: [255, 0, 0, 255],
+                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
             ]
         };
     }
@@ -241,6 +341,17 @@ class Renderer {
                     CG.mat3x3Translate(polygon.translate_matrix, polygon.position.x, polygon.position.y);
                 }
                 break;
+            case 3:
+                const shot = this.models.slide3[0];
+                let delta_x2 = delta_time * shot.velocity.x;
+
+                // Check for a collision in the X dimension
+                if (shot.position.x + delta_x2 >= (this.canvas.width - shot.radius) && shot.velocity.x > 0) {
+                    shot.position.x = shot.radius + 180;
+                } else {
+                    shot.position.x += delta_x2;
+                }
+                break;
             default:
                 break;
         }
@@ -305,7 +416,14 @@ class Renderer {
         // TODO: get creative!
         //   - animation should involve all three basic transformation types
         //     (translation, scaling, and rotation)
+        this.ctx.drawImage(this.image, 5, (this.canvas.height - this.canvas.height / 3) / 2, this.canvas.width / 4.5, this.canvas.height / 3);
 
+        // Draw the ball in it's current position
+        const shot = this.models.slide3[0];
+        this.ctx.fillStyle = `rgba(${shot.color})`;
+        this.ctx.beginPath();
+        this.ctx.arc(Math.floor(shot.position.x), Math.floor(shot.position.y), shot.radius, 0, Math.PI * 2);
+        this.ctx.fill();
 
     }
 
