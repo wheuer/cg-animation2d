@@ -6,8 +6,8 @@ import { Matrix } from "./matrix.js";
 // Set values of existing 3x3 matrix to the identity matrix
 function mat3x3Identity(mat3x3) {
     mat3x3.values = [[1, 0, 0],
-    [0, 1, 0],
-    [0, 0, 1]];
+                    [0, 1, 0],
+                    [0, 0, 1]];
 }
 
 // Set values of existing 3x3 matrix to the translate matrix

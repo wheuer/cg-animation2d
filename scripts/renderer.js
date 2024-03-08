@@ -18,27 +18,60 @@ class Renderer {
 
         this.models = {
             slide0: [
-                // example model (diamond) -> should be replaced with actual model
+                // Ball
                 {
-                    // vertices: [
-                    //     CG.Vector3(400, 150, 1),
-                    //     CG.Vector3(500, 300, 1),
-                    //     CG.Vector3(400, 450, 1),
-                    //     CG.Vector3(300, 300, 1)
-                    // ],
-
-                    position: { x: canvas.width / 2, y: canvas.height / 2 }, // Initial position at the center of the canvas
-                    velocity: { x: 300, y: 150 }, // Initial velocity
-
+                    position: { x: canvas.width / 2, y: canvas.height / 2 }, // Position of center of ball, start with ball centered on window
+                    velocity: { x: 0.5, y: 0.5}, // Start with ball moving towards the top right
                     radius: 20,
                     color: [255, 0, 0, 255], // Red
-
-                    // Initialize prev_time
-                    prev_time: null,
-                    transform: new Matrix(3, 3) // Initialize with an identity matrix
                 }
             ],
-            slide1: [],
+            slide1: [
+                // Spin is negative for clock-wise and positive for counter-clock wise
+                // Polygon 1
+                {
+                    vertices: [
+                        CG.Vector3(50, 50, 1),
+                        CG.Vector3(-50, 50, 1),
+                        CG.Vector3(-50, -50, 1),
+                        CG.Vector3(50, -50, 1),
+                    ],
+                    angular_velocity: -0.001,
+                    position: {x: 150, y: 150},
+                    color: [255, 0, 0, 255],
+                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Polygon 2
+                {
+                    vertices: [
+                        CG.Vector3(193 - 100, 116 - 100, 1),
+                        CG.Vector3(114 - 100, 109 - 100, 1),
+                        CG.Vector3(3 - 100, 90 - 100, 1),
+                        CG.Vector3(8 - 100, 74 - 100, 1),
+                        CG.Vector3(63 - 100, 69 - 100, 1),
+                        CG.Vector3(116 - 100, 80 - 100, 1)
+                    ],
+                    angular_velocity: 0.001,
+                    position: {x: 500, y: 200},
+                    color: [66, 245, 75, 255],
+                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Polygon 3
+                {
+                    vertices: [
+                        CG.Vector3(0, 100, 1),
+                        CG.Vector3(-86.6, -50, 1),
+                        CG.Vector3(86.6, -50, 1)
+                    ],
+                    angular_velocity: -0.001,
+                    position: {x: 400, y: 400},
+                    color: [66, 135, 245, 255],
+                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                }
+            ],
             slide2: [],
             slide3: []
         };
@@ -96,6 +129,62 @@ class Renderer {
     //
     updateTransforms(time, delta_time) {
         // TODO: update any transformations needed for animation
+        switch (this.slide_idx) {
+            case 0:
+                /*
+                    Slide 0 (Bounding Ball)
+                    Here we just need to update the current position for the ball based on the delta_time while accounting for edge collisions
+                */
+                // Check and handle if the new position will result in an edge collision
+                const ball = this.models.slide0[0];
+                let delta_x = delta_time * ball.velocity.x;
+                let delta_y = delta_time * ball.velocity.y;
+                
+                // Check for a collision in the X dimension
+                if (ball.position.x + delta_x <= ball.radius && ball.velocity.x < 0) {
+                    // Ball is outside the positive x dimension, we need to re-position the ball inside the x dimension 
+                    //      with the distance it would have traveled backwards if the velocity had swapped at impact
+                    ball.position.x = Math.abs(delta_x) - (ball.position.x - ball.radius) + ball.radius;
+                    ball.velocity.x *= -1;
+                } else if (ball.position.x + delta_x >= (this.canvas.width - ball.radius) && ball.velocity.x > 0) {
+                    // Ball is outside the negative x dimension, we need to re-position the ball inside the x dimension 
+                    //      with the distance it would have traveled backwards if the velocity had swapped at impact
+                    ball.position.x = this.canvas.width - (Math.abs(delta_x) - (this.canvas.width - (ball.position.x + ball.radius))) - ball.radius;
+                    ball.velocity.x *= -1;
+                } else {
+                    // Ball is inside the x dimension, ok to set new x position
+                    ball.position.x += delta_x;                    
+                }
+                
+                // Check for a collision in the Y dimension
+                if (ball.position.y + delta_y <= ball.radius && ball.velocity.y < 0) {
+                    // Ball is outside the negative y dimension, we need to re-position the ball inside the y dimension
+                    //      with the distance it would have traveled backwards ifthe velocity had swapped at impact
+                    ball.position.y = Math.abs(delta_y) - (ball.position.y - ball.radius) + ball.radius;
+                    //ball.position.y = (delta_y - (ball.position.y - ball.radius));
+                    ball.velocity.y *= -1;
+                } else if (ball.position.y + delta_y >= (this.canvas.height - ball.radius) && ball.velocity.y > 0) {
+                    // Ball is outside the negative y dimension, we need to re-position the ball inside the y dimension
+                    //      with the distance it would have traveled backwards ifthe velocity had swapped at impact
+                    ball.position.y = this.canvas.height - (Math.abs(delta_y) - (this.canvas.height - (ball.position.y + ball.radius))) - ball.radius;
+                    ball.velocity.y *= -1;
+                } else {
+                    // Ball is inside the y dimension, ok to set new y position
+                    ball.position.y += delta_y;
+                }
+                break;
+            case 1:
+                /*
+                    Just need to update the polygon transformation matrices based on the new time
+                */
+                for (let i = 0; i < this.models.slide1.length; i++) {
+                    CG.mat3x3Rotate(this.models.slide1[i].rotate_matrix, (time * this.models.slide1[i].angular_velocity) % (2*Math.PI));
+                    CG.mat3x3Translate(this.models.slide1[i].translate_matrix, this.models.slide1[i].position.x, this.models.slide1[i].position.y);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     //
@@ -118,83 +207,24 @@ class Renderer {
         }
     }
 
-    //
     drawSlide0() {
+        // Draw the ball in it's current position
         const ball = this.models.slide0[0];
-
-        // Function to update the position of the ball using transformation matrices
-        const updateBallPosition = (deltaTime) => {
-            // Get the current position vector
-            let currentPosition = new CG.Vector3(ball.position.x, ball.position.y, 1);
-
-            // Define the translation matrix based on velocity and time
-            let translationMatrix = new Matrix(3, 3);
-            CG.mat3x3Translate(translationMatrix, this.models.slide0[0].velocity.x * deltaTime, this.models.slide0[0].velocity.y * deltaTime);
-
-            // Apply translation to the current position vector
-            let newPosition = Matrix.multiply([translationMatrix, currentPosition]);
-
-            // Update the position of the ball
-            this.models.slide0[0].position.x = newPosition.values[0][0];
-            this.models.slide0[0].position.y = newPosition.values[1][0];
-
-            // Check for collisions with canvas edges and adjust position if necessary
-            handleCanvasEdgesCollision();
-        };
-
-        // Function to handle collisions with canvas edges
-        const handleCanvasEdgesCollision = () => {
-            if (ball.position.x <= ball.radius || ball.position.x >= this.canvas.width - ball.radius) {
-                ball.velocity.x *= -1;
-
-            }
-            if (ball.position.y <= ball.radius || ball.position.y >= this.canvas.height - ball.radius) {
-                ball.velocity.y *= -1;
-
-            }
-        };
-
-        // Function to draw the ball on the canvas
-        const drawBall = () => {
-            this.ctx.fillStyle = `rgba(${ball.color})`;
-            this.ctx.beginPath();
-            this.ctx.arc(ball.position.x, ball.position.y, ball.radius, 0, Math.PI * 2);
-            this.ctx.fill();
-        };
-
-        // Function to animate the bouncing ball
-        const animateBall = (timestamp) => {
-            const deltaTime = (timestamp - this.models.slide0[0].prev_time) / 1000;
-
-            // Update ball position using transformation matrices
-            updateBallPosition(deltaTime);
-
-            // Clear the canvas and draw the ball
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            drawBall();
-
-            // Request next animation frame
-            requestAnimationFrame(animateBall);
-
-            // Update lastTimestamp
-            this.models.slide0[0].prev_time = timestamp;
-        };
-
-        // Start the animation
-        animateBall(this.models.slide0[0].prev_time);
-
-        // Following lines are example of drawing a single polygon
-        // (this should be removed/edited after you implement the slide)
-        // let teal = [0, 128, 128, 255];
-        // this.drawConvexPolygon(this.models.slide0[0].vertices, teal);
+        this.ctx.fillStyle = `rgba(${ball.color})`;
+        this.ctx.beginPath();
+        this.ctx.arc(Math.floor(ball.position.x), Math.floor(ball.position.y), ball.radius, 0, Math.PI * 2);
+        this.ctx.fill();
     }
 
     //
     drawSlide1() {
-        // TODO: draw at least 3 polygons that spin about their own centers
-        //   - have each polygon spin at a different speed / direction
-
-
+        for (let i = 0; i < this.models.slide1.length; i++) {
+            let renderedPolygon = [];
+            for (let j = 0; j < this.models.slide1[i].vertices.length; j++) {
+                renderedPolygon.push(Matrix.multiply([this.models.slide1[i].translate_matrix, this.models.slide1[i].rotate_matrix, this.models.slide1[i].vertices[j]]));
+            }
+            this.drawConvexPolygon(renderedPolygon, this.models.slide1[i].color);
+        }
     }
 
     //
