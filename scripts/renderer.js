@@ -114,24 +114,36 @@ class Renderer {
                 // Add a little dude with a gun in the background who shoots at the entity
                 // Make the balls turn invisible after reaching the entity?
 
-                // Shot
+                // Shot 1
                 {
-                    position: { x: 200, y: canvas.height / 2 }, // Position of center of ball, start with ball centered on window
-                    velocity: { x: 0.6, y: 0 }, // Start with ball moving towards the top right
-                    radius: 20,
-                    color: [255, 255, 0, 255], // Red
+                    position: { x: 150, y: canvas.height / 2 + 50 },
+                    velocity: { x: 0.6, y: 0 },
+                    radius: 10,
+                    color: [255, 255, 0, 255], // Yellow
+                },
+
+                // Shot 2
+                {
+                    position: { x: 150, y: canvas.height / 2 - 50 },
+                    velocity: { x: 0.6, y: 0 },
+                    radius: 10,
+                    color: [255, 255, 0, 255], // Yellow
                 },
 
                 // Body
                 {
                     vertices: [
-                        CG.Vector3(50, 50, 1),
-                        CG.Vector3(-50, 50, 1),
-                        CG.Vector3(-50, -50, 1),
-                        CG.Vector3(50, -50, 1),
+                        CG.Vector3(0, 250, 1),
+                        CG.Vector3(176.8, 176.8, 1),
+                        CG.Vector3(250, 0, 1),
+                        CG.Vector3(176.8, -176.8, 1),
+                        CG.Vector3(0, -250, 1),
+                        CG.Vector3(-176.8, -176.8, 1),
+                        CG.Vector3(-250, 0, 1),
+                        CG.Vector3(-176.8, 176.8, 1)
                     ],
-                    position: { x: 150, y: 150 },
-                    color: [255, 0, 0, 255],
+                    position: { x: canvas.width - 100, y: canvas.height / 2 },
+                    color: [128, 0, 128, 255], // Purple
                     scale_factor: 1, // Initial scale factor
                     scale_direction: 1, // Initial scale direction
                     scale_matrix: new Matrix(3, 3), // Current scale
@@ -140,56 +152,66 @@ class Renderer {
                 // Eye1
                 {
                     vertices: [
-                        CG.Vector3(50, 50, 1),
-                        CG.Vector3(-50, 50, 1),
-                        CG.Vector3(-50, -50, 1),
-                        CG.Vector3(50, -50, 1),
+                        CG.Vector3(25, 0, 1),
+                        CG.Vector3(18, 18, 1),
+                        CG.Vector3(0, 25, 1),
+                        CG.Vector3(-18, 18, 1),
+                        CG.Vector3(-25, 0, 1),
+                        CG.Vector3(-18, -18, 1),
+                        CG.Vector3(0, -25, 1),
+                        CG.Vector3(18, -18, 1)
                     ],
-                    angular_velocity: -0.001,
-                    position: { x: 150, y: 150 },
-                    color: [255, 0, 0, 255],
-                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    position: { x: canvas.width - 250, y: canvas.height / 2 + 50 },
+                    color: [255, 255, 255, 255], // White
+                    scale_factor: 0.5, // Initial scale factor
+                    scale_direction: 1, // Initial scale direction
+                    scale_matrix: new Matrix(3, 3), // Current scale
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 },
                 // Eye2
                 {
                     vertices: [
-                        CG.Vector3(50, 50, 1),
-                        CG.Vector3(-50, 50, 1),
-                        CG.Vector3(-50, -50, 1),
-                        CG.Vector3(50, -50, 1),
+                        CG.Vector3(25, 0, 1),
+                        CG.Vector3(18, 18, 1),
+                        CG.Vector3(0, 25, 1),
+                        CG.Vector3(-18, 18, 1),
+                        CG.Vector3(-25, 0, 1),
+                        CG.Vector3(-18, -18, 1),
+                        CG.Vector3(0, -25, 1),
+                        CG.Vector3(18, -18, 1)
                     ],
-                    angular_velocity: -0.001,
-                    position: { x: 150, y: 150 },
-                    color: [255, 0, 0, 255],
-                    rotate_matrix: new Matrix(3, 3), // Current rotation
+                    position: { x: canvas.width - 30, y: canvas.height / 2 + 50 },
+                    color: [255, 255, 255, 255], // White
+                    scale_factor: 0.5, // Initial scale factor
+                    scale_direction: 1, // Initial scale direction
+                    scale_matrix: new Matrix(3, 3), // Current scale
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 },
                 // Mouth1
                 {
                     vertices: [
-                        CG.Vector3(50, 50, 1),
-                        CG.Vector3(-50, 50, 1),
-                        CG.Vector3(-50, -50, 1),
-                        CG.Vector3(50, -50, 1),
+                        CG.Vector3(85, 85, 1),
+                        CG.Vector3(-85, 85, 1),
+                        CG.Vector3(-85, -85, 1),
+                        CG.Vector3(85, -85, 1),
                     ],
-                    angular_velocity: -0.001,
-                    position: { x: 150, y: 150 },
-                    color: [255, 0, 0, 255],
+                    angular_velocity: -0.02,
+                    position: { x: canvas.width - 140, y: canvas.height / 2 - 120 },
+                    color: [255, 165, 0, 255], // Bright orange
                     rotate_matrix: new Matrix(3, 3), // Current rotation
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 },
                 // Mouth2
                 {
                     vertices: [
-                        CG.Vector3(50, 50, 1),
-                        CG.Vector3(-50, 50, 1),
-                        CG.Vector3(-50, -50, 1),
-                        CG.Vector3(50, -50, 1),
+                        CG.Vector3(75, 75, 1),
+                        CG.Vector3(-75, 75, 1),
+                        CG.Vector3(-75, -75, 1),
+                        CG.Vector3(75, -75, 1),
                     ],
-                    angular_velocity: -0.001,
-                    position: { x: 150, y: 150 },
-                    color: [255, 0, 0, 255],
+                    angular_velocity: -0.04,
+                    position: { x: canvas.width - 140, y: canvas.height / 2 - 120 },
+                    color: [255, 255, 0, 255], // Bright yellow
                     rotate_matrix: new Matrix(3, 3), // Current rotation
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 },
@@ -201,9 +223,9 @@ class Renderer {
                         CG.Vector3(-50, -50, 1),
                         CG.Vector3(50, -50, 1),
                     ],
-                    angular_velocity: -0.001,
-                    position: { x: 150, y: 150 },
-                    color: [255, 0, 0, 255],
+                    angular_velocity: -0.06,
+                    position: { x: canvas.width - 140, y: canvas.height / 2 - 120 },
+                    color: [255, 255, 255, 255], // White
                     rotate_matrix: new Matrix(3, 3), // Current rotation
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 },
@@ -342,14 +364,59 @@ class Renderer {
                 }
                 break;
             case 3:
-                const shot = this.models.slide3[0];
-                let delta_x2 = delta_time * shot.velocity.x;
+                // Draw the shots being fired
+                for (let i = 0; i < 2; i++) {
+                    const shot = this.models.slide3[i];
+                    let delta_x2 = delta_time * shot.velocity.x;
 
-                // Check for a collision in the X dimension
-                if (shot.position.x + delta_x2 >= (this.canvas.width - shot.radius) && shot.velocity.x > 0) {
-                    shot.position.x = shot.radius + 180;
-                } else {
-                    shot.position.x += delta_x2;
+                    // Check for a collision in the X dimension
+                    if (shot.position.x + delta_x2 >= (this.canvas.width - shot.radius - 150) && shot.velocity.x > 0) {
+                        shot.position.x = shot.radius + 180;
+                    } else {
+                        shot.position.x += delta_x2;
+                    }
+                }
+
+                // Draw the body
+                let polygon = this.models.slide3[2];
+
+                // Adjust scale factor based on time and direction
+                polygon.scale_factor += polygon.scale_direction * delta_time * 0.001; // Adjust the scale factor
+
+                // Check if scaling factor exceeds certain limits to reverse direction
+                if (polygon.scale_factor >= 1.5) {
+                    polygon.scale_factor = 1.5;
+                    polygon.scale_direction = -1; // Reverse direction
+                } else if (polygon.scale_factor <= 1.25) {
+                    polygon.scale_factor = 1.25;
+                    polygon.scale_direction = 1; // Reverse direction
+                }
+
+                CG.mat3x3Scale(polygon.scale_matrix, polygon.scale_factor, polygon.scale_factor);
+                CG.mat3x3Translate(polygon.translate_matrix, polygon.position.x, polygon.position.y);
+
+                for (let i = 3; i < 5; i++) {
+                    let eye = this.models.slide3[i];
+
+                    // Adjust scale factor based on time and direction
+                    eye.scale_factor += eye.scale_direction * delta_time * 0.001; // Adjust the scale factor
+
+                    // Check if scaling factor exceeds certain limits to reverse direction
+                    if (eye.scale_factor >= 1.5) {
+                        eye.scale_factor = 1.5;
+                        eye.scale_direction = -1; // Reverse direction
+                    } else if (eye.scale_factor <= 1) {
+                        eye.scale_factor = 1;
+                        eye.scale_direction = 1; // Reverse direction
+                    }
+
+                    CG.mat3x3Scale(eye.scale_matrix, eye.scale_factor, eye.scale_factor);
+                    CG.mat3x3Translate(eye.translate_matrix, eye.position.x, eye.position.y);
+                }
+
+                for (let i = 5; i < this.models.slide3.length; i++) {
+                    CG.mat3x3Rotate(this.models.slide3[i].rotate_matrix, (time * this.models.slide3[i].angular_velocity) % (2 * Math.PI));
+                    CG.mat3x3Translate(this.models.slide3[i].translate_matrix, this.models.slide3[i].position.x, this.models.slide3[i].position.y);
                 }
                 break;
             default:
@@ -418,12 +485,56 @@ class Renderer {
         //     (translation, scaling, and rotation)
         this.ctx.drawImage(this.image, 5, (this.canvas.height - this.canvas.height / 3) / 2, this.canvas.width / 4.5, this.canvas.height / 3);
 
-        // Draw the ball in it's current position
-        const shot = this.models.slide3[0];
-        this.ctx.fillStyle = `rgba(${shot.color})`;
+        // Draw the body
+        const body = this.models.slide3[2];
+        this.ctx.fillStyle = `rgba(${body.color})`;
         this.ctx.beginPath();
-        this.ctx.arc(Math.floor(shot.position.x), Math.floor(shot.position.y), shot.radius, 0, Math.PI * 2);
+        for (let i = 0; i < body.vertices.length; i++) {
+            let transformedVertex = Matrix.multiply([body.translate_matrix, body.scale_matrix, body.vertices[i]]);
+            this.ctx.lineTo(transformedVertex.values[0][0], transformedVertex.values[1][0]);
+        }
+        this.ctx.closePath();
         this.ctx.fill();
+
+        // Draw eye1
+        const eye1 = this.models.slide3[3];
+        this.ctx.fillStyle = `rgba(${eye1.color})`;
+        this.ctx.beginPath();
+        for (let i = 0; i < eye1.vertices.length; i++) {
+            let transformedVertex = Matrix.multiply([eye1.translate_matrix, eye1.scale_matrix, eye1.vertices[i]]);
+            this.ctx.lineTo(transformedVertex.values[0][0], transformedVertex.values[1][0]);
+        }
+        this.ctx.closePath();
+        this.ctx.fill();
+
+        // Draw eye2
+        const eye2 = this.models.slide3[4];
+        this.ctx.fillStyle = `rgba(${eye2.color})`;
+        this.ctx.beginPath();
+        for (let i = 0; i < eye2.vertices.length; i++) {
+            let transformedVertex = Matrix.multiply([eye2.translate_matrix, eye2.scale_matrix, eye2.vertices[i]]);
+            this.ctx.lineTo(transformedVertex.values[0][0], transformedVertex.values[1][0]);
+        }
+        this.ctx.closePath();
+        this.ctx.fill();
+
+        // Draw Mouth
+        for (let i = 5; i < this.models.slide3.length; i++) {
+            let renderedPolygon = [];
+            for (let j = 0; j < this.models.slide3[i].vertices.length; j++) {
+                renderedPolygon.push(Matrix.multiply([this.models.slide3[i].translate_matrix, this.models.slide3[i].rotate_matrix, this.models.slide3[i].vertices[j]]));
+            }
+            this.drawConvexPolygon(renderedPolygon, this.models.slide3[i].color);
+        }
+
+        // Draw shots
+        for (let i = 0; i < 2; i++) {
+            const shot = this.models.slide3[i];
+            this.ctx.fillStyle = `rgba(${shot.color})`;
+            this.ctx.beginPath();
+            this.ctx.arc(Math.floor(shot.position.x), Math.floor(shot.position.y), shot.radius, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
 
     }
 
