@@ -49,7 +49,7 @@ class Renderer {
                         CG.Vector3(-50, -50, 1),
                         CG.Vector3(50, -50, 1),
                     ],
-                    angular_velocity: -0.001,
+                    angular_velocity: -0.01,
                     position: { x: 150, y: 150 },
                     color: [255, 0, 0, 255],
                     rotate_matrix: new Matrix(3, 3), // Current rotation
@@ -65,7 +65,7 @@ class Renderer {
                         CG.Vector3(63 - 100, 69 - 100, 1),
                         CG.Vector3(116 - 100, 80 - 100, 1)
                     ],
-                    angular_velocity: 0.001,
+                    angular_velocity: 0.005,
                     position: { x: 500, y: 200 },
                     color: [66, 245, 75, 255],
                     rotate_matrix: new Matrix(3, 3), // Current rotation
