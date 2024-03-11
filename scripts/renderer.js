@@ -5,7 +5,8 @@ class Renderer {
     // canvas:              object ({id: __, width: __, height: __})
     // limit_fps_flag:      bool 
     // fps:                 int
-    constructor(canvas, limit_fps_flag, fps) {
+    // ball_count:          int
+    constructor(canvas, limit_fps_flag, fps, ball_count) {
         this.canvas = document.getElementById(canvas.id);
         this.canvas.width = canvas.width;
         this.canvas.height = canvas.height;
@@ -15,18 +16,27 @@ class Renderer {
         this.fps = fps;
         this.start_time = null;
         this.prev_time = null;
-
+        
         this.image = new Image();
         this.image.src = 'images/galaga.png';
 
+        this.ball_count = ball_count;
+        this.balls = [
+            // Ball 0 (always present)
+            {
+                position: { x: canvas.width / 2, y: canvas.height / 2 }, // Position of center of ball, start with ball centered on window
+                velocity: { x: 0.5, y: 0.5 }, // Start with ball moving towards the top right
+                radius: 20,
+                color: [255, 0, 0, 255], // Red
+            },
+        ]
+
         this.models = {
             slide0: [
-                // Ball
                 {
-                    position: { x: canvas.width / 2, y: canvas.height / 2 }, // Position of center of ball, start with ball centered on window
-                    velocity: { x: 0.5, y: 0.5 }, // Start with ball moving towards the top right
-                    radius: 20,
-                    color: [255, 0, 0, 255], // Red
+                    ball_radius_min: 10,
+                    ball_radius_max: 25,
+                    current_balls: 1
                 }
             ],
             slide1: [
@@ -84,10 +94,16 @@ class Renderer {
                         CG.Vector3(-50, -50, 1),
                         CG.Vector3(50, -50, 1),
                     ],
-                    position: { x: 150, y: 150 },
+                    position: { x: 400, y: 400 },
                     color: [255, 0, 0, 255],
-                    scale_factor: 1, // Initial scale factor
-                    scale_direction: 1, // Initial scale direction
+                    maximum_scale_x: 3,
+                    maximum_scale_y: 3,
+                    minimum_scale_x: 0.5,
+                    minimum_scale_y: 0.5,
+                    scale_factor_x: 0.002,
+                    scale_factor_y: -0.002,
+                    scale_direction_x: 1,
+                    scale_direction_y: 1,
                     scale_matrix: new Matrix(3, 3), // Current scale
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 },
@@ -101,10 +117,16 @@ class Renderer {
                         CG.Vector3(63 - 100, 69 - 100, 1),
                         CG.Vector3(116 - 100, 80 - 100, 1)
                     ],
-                    position: { x: 500, y: 200 },
+                    position: { x: 400, y: 200 },
                     color: [66, 245, 75, 255],
-                    scale_factor: 1, // Initial scale factor
-                    scale_direction: 1, // Initial scale direction
+                    maximum_scale_x: 2,
+                    maximum_scale_y: 2,
+                    minimum_scale_x: 0.5,
+                    minimum_scale_y: 0.5,
+                    scale_factor_x: -0.002,
+                    scale_factor_y: 0.001, 
+                    scale_direction_x: 1,
+                    scale_direction_y: 1,
                     scale_matrix: new Matrix(3, 3), // Current scale
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 },
@@ -229,6 +251,245 @@ class Renderer {
                     rotate_matrix: new Matrix(3, 3), // Current rotation
                     translate_matrix: new Matrix(3, 3) // Current translation from origin
                 },
+            ],
+            slide4: [
+                // Color settings
+                {
+                    wheel_angle: 0,
+                    wheel_angular_velocity: 0.005
+                },
+                // Inner wheel
+                {
+                    color_stop_count: 40,
+                    color_shift_velocity: 0.4,
+                    color_stops: [
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255]
+                    ]
+                },
+                // Triangle
+                {
+                    default_color: [0,0,0,255],
+                    color_stop_count: 30,
+                    color_shift_velocity: 0.3,
+                    color_stops: [
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255]
+                    ],                    
+                    vertices: [
+                        CG.Vector3(0, 100, 1),
+                        CG.Vector3(-86.6, -50, 1),
+                        CG.Vector3(86.6, -50, 1)
+                    ],
+                    position: { x: canvas.width / 2, y: canvas.height / 2},
+                    color: [255, 255, 255, 255],
+                    angular_velocity: -0.001,
+                    rotate_matrix: new Matrix(3, 3), // Current rotate value
+                    scale_matrix: new Matrix(3, 3), // Current scale
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Square
+                {
+                    default_color: [255,0,0,255],
+                    color_stop_count: 20,
+                    color_shift_velocity: 0.2,
+                    color_stops: [
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255]
+                    ],                    
+                    vertices: [
+                        CG.Vector3(-100, 100, 1),
+                        CG.Vector3(100, 100, 1),
+                        CG.Vector3(100, -100, 1),
+                        CG.Vector3(-100, -100, 1),
+                    ],
+                    position: { x: canvas.width / 2, y: canvas.height / 2},
+                    color: [255, 255, 255, 255],
+                    angular_velocity: 0.001,
+                    rotate_matrix: new Matrix(3, 3), // Current rotate value
+                    scale_matrix: new Matrix(3, 3), // Current scale
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Hexagon
+                {
+                    default_color: [0,255,0,255],
+                    color_stop_count: 10,
+                    color_shift_velocity: 0.2,
+                    color_stops: [
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255],
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255]
+                    ], 
+                    vertices: [
+                        CG.Vector3(165, 0, 1),
+                        CG.Vector3(82, 142, 1),
+                        CG.Vector3(-82, 142, 1),
+                        CG.Vector3(-165, 0, 1),
+                        CG.Vector3(-82, -142, 1),
+                        CG.Vector3(82, -142, 1)
+                    ],
+                    position: { x: canvas.width / 2, y: canvas.height / 2},
+                    color: [255, 255, 255, 255],
+                    angular_velocity: -0.001,
+                    rotate_matrix: new Matrix(3, 3), // Current rotate value
+                    scale_matrix: new Matrix(3, 3), // Current scale
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Outer Square 1
+                {
+                    default_color: [0,0,255,255],
+                    color_stop_count: 5,
+                    color_shift_velocity: 0.2,
+                    color_stops: [
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255]
+                    ], 
+                    vertices: [
+                        CG.Vector3(-this.canvas.width/2, this.canvas.height/2, 1),
+                        CG.Vector3(this.canvas.width/2, this.canvas.height/2, 1),
+                        CG.Vector3(this.canvas.width/2, -this.canvas.height/2, 1),
+                        CG.Vector3(-this.canvas.width/2, -this.canvas.height/2, 1),
+                    ],
+                    position: { x: canvas.width / 2, y: canvas.height / 2},
+                    maximum_scale_x: 1,
+                    maximum_scale_y: 1,
+                    minimum_scale_x: 0.3,
+                    minimum_scale_y: 0.3,
+                    scale_factor_x: 0.0005,
+                    scale_factor_y: 0.0005,
+                    scale_direction_x: 1,
+                    scale_direction_y: 1,
+                    angular_velocity: -0.0015,
+                    rotate_matrix: new Matrix(3, 3), // Current rotate value
+                    scale_matrix: new Matrix(3, 3), // Current scale
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                },
+                // Outer Square 2
+                {
+                    default_color: [0,0,255,255],
+                    color_stop_count: 5,
+                    color_shift_velocity: 0.25,
+                    color_stops: [
+                        [234,0,128,255],
+                        [65,23,206,255],
+                        [150,76,0,255],
+                        [10,105,12,255],
+                        [184,127,19,255]
+                    ], 
+                    vertices: [
+                        CG.Vector3(-this.canvas.width/2, this.canvas.height/2, 1),
+                        CG.Vector3(this.canvas.width/2, this.canvas.height/2, 1),
+                        CG.Vector3(this.canvas.width/2, -this.canvas.height/2, 1),
+                        CG.Vector3(-this.canvas.width/2, -this.canvas.height/2, 1),
+                    ],
+                    position: { x: canvas.width / 2, y: canvas.height / 2},
+                    maximum_scale_x: 1,
+                    maximum_scale_y: 1,
+                    minimum_scale_x: 0.4,
+                    minimum_scale_y: 0.4,
+                    scale_factor_x: -0.0005,
+                    scale_factor_y: -0.0005,
+                    scale_direction_x: -1,
+                    scale_direction_y: -1,
+                    angular_velocity: 0.001,
+                    rotate_matrix: new Matrix(3, 3), // Current rotate value
+                    scale_matrix: new Matrix(3, 3), // Current scale
+                    translate_matrix: new Matrix(3, 3) // Current translation from origin
+                }
             ]
         };
     }
@@ -243,9 +504,21 @@ class Renderer {
         this.fps = n;
     }
 
+    // new_ball_count: int
+    setBallCount (new_ball_count) {
+        this.ball_count = new_ball_count;
+    }
+
     // idx: int
     setSlideIndex(idx) {
         this.slide_idx = idx;
+        // Turn on/off ball count slider
+        let slider = document.getElementById("ui_extension");
+        if (idx == 0) {
+            slider.style.display = 'flex';
+        } else {
+            slider.style.display = 'none';
+        }
     }
 
     animate(timestamp) {
@@ -291,43 +564,61 @@ class Renderer {
                     Slide 0 (Bounding Ball)
                     Here we just need to update the current position for the ball based on the delta_time while accounting for edge collisions
                 */
-                // Check and handle if the new position will result in an edge collision
-                const ball = this.models.slide0[0];
-                let delta_x = delta_time * ball.velocity.x;
-                let delta_y = delta_time * ball.velocity.y;
-
-                // Check for a collision in the X dimension
-                if (ball.position.x + delta_x <= ball.radius && ball.velocity.x < 0) {
-                    // Ball is outside the positive x dimension, we need to re-position the ball inside the x dimension 
-                    //      with the distance it would have traveled backwards if the velocity had swapped at impact
-                    ball.position.x = Math.abs(delta_x) - (ball.position.x - ball.radius) + ball.radius;
-                    ball.velocity.x *= -1;
-                } else if (ball.position.x + delta_x >= (this.canvas.width - ball.radius) && ball.velocity.x > 0) {
-                    // Ball is outside the negative x dimension, we need to re-position the ball inside the x dimension 
-                    //      with the distance it would have traveled backwards if the velocity had swapped at impact
-                    ball.position.x = this.canvas.width - (Math.abs(delta_x) - (this.canvas.width - (ball.position.x + ball.radius))) - ball.radius;
-                    ball.velocity.x *= -1;
-                } else {
-                    // Ball is inside the x dimension, ok to set new x position
-                    ball.position.x += delta_x;
+                for (let i = this.balls.length; i < this.ball_count; i++) {
+                    this.balls.push({
+                        position: { x: this.canvas.width / 2, y: this.canvas.height / 2 }, // Position of center of ball, start with ball centered on window
+                        velocity: { x: -1 + 2*Math.random(), y: -1 + 2*Math.random() }, // Start with ball moving towards the top right
+                        radius:  Math.floor((Math.random() * (this.models.slide0[0].ball_radius_max - this.models.slide0[0].ball_radius_min)) + this.models.slide0[0].ball_radius_min),
+                        color: [Math.floor(Math.random() * 255), 
+                                Math.floor(Math.random() * 255), 
+                                Math.floor(Math.random() * 255), 
+                                255],
+                       })
                 }
+                
+                while (this.balls.length != this.ball_count) this.balls.pop();
 
-                // Check for a collision in the Y dimension
-                if (ball.position.y + delta_y <= ball.radius && ball.velocity.y < 0) {
-                    // Ball is outside the negative y dimension, we need to re-position the ball inside the y dimension
-                    //      with the distance it would have traveled backwards ifthe velocity had swapped at impact
-                    ball.position.y = Math.abs(delta_y) - (ball.position.y - ball.radius) + ball.radius;
-                    //ball.position.y = (delta_y - (ball.position.y - ball.radius));
-                    ball.velocity.y *= -1;
-                } else if (ball.position.y + delta_y >= (this.canvas.height - ball.radius) && ball.velocity.y > 0) {
-                    // Ball is outside the negative y dimension, we need to re-position the ball inside the y dimension
-                    //      with the distance it would have traveled backwards ifthe velocity had swapped at impact
-                    ball.position.y = this.canvas.height - (Math.abs(delta_y) - (this.canvas.height - (ball.position.y + ball.radius))) - ball.radius;
-                    ball.velocity.y *= -1;
-                } else {
-                    // Ball is inside the y dimension, ok to set new y position
-                    ball.position.y += delta_y;
+                for (let i = 0; i < this.balls.length; i++) {
+                    // Check and handle if the new position will result in an edge collision
+                    // const ball = this.models.slide0[1];
+                    const ball = this.balls[i];
+                    let delta_x = delta_time * ball.velocity.x;
+                    let delta_y = delta_time * ball.velocity.y;
+
+                    // Check for a collision in the X dimension
+                    if (ball.position.x + delta_x <= ball.radius && ball.velocity.x < 0) {
+                        // Ball is outside the positive x dimension, we need to re-position the ball inside the x dimension 
+                        //      with the distance it would have traveled backwards if the velocity had swapped at impact
+                        ball.position.x = Math.abs(delta_x) - (ball.position.x - ball.radius) + ball.radius;
+                        ball.velocity.x *= -1;
+                    } else if (ball.position.x + delta_x >= (this.canvas.width - ball.radius) && ball.velocity.x > 0) {
+                        // Ball is outside the negative x dimension, we need to re-position the ball inside the x dimension 
+                        //      with the distance it would have traveled backwards if the velocity had swapped at impact
+                        ball.position.x = this.canvas.width - (Math.abs(delta_x) - (this.canvas.width - (ball.position.x + ball.radius))) - ball.radius;
+                        ball.velocity.x *= -1;
+                    } else {
+                        // Ball is inside the x dimension, ok to set new x position
+                        ball.position.x += delta_x;
+                    }
+
+                    // Check for a collision in the Y dimension
+                    if (ball.position.y + delta_y <= ball.radius && ball.velocity.y < 0) {
+                        // Ball is outside the negative y dimension, we need to re-position the ball inside the y dimension
+                        //      with the distance it would have traveled backwards ifthe velocity had swapped at impact
+                        ball.position.y = Math.abs(delta_y) - (ball.position.y - ball.radius) + ball.radius;
+                        //ball.position.y = (delta_y - (ball.position.y - ball.radius));
+                        ball.velocity.y *= -1;
+                    } else if (ball.position.y + delta_y >= (this.canvas.height - ball.radius) && ball.velocity.y > 0) {
+                        // Ball is outside the negative y dimension, we need to re-position the ball inside the y dimension
+                        //      with the distance it would have traveled backwards ifthe velocity had swapped at impact
+                        ball.position.y = this.canvas.height - (Math.abs(delta_y) - (this.canvas.height - (ball.position.y + ball.radius))) - ball.radius;
+                        ball.velocity.y *= -1;
+                    } else {
+                        // Ball is inside the y dimension, ok to set new y position
+                        ball.position.y += delta_y;
+                    }
                 }
+                
                 break;
             case 1:
                 /*
@@ -340,27 +631,28 @@ class Renderer {
                 break;
             case 2:
                 /*
-                    Slide 0 (Growing/Shrinking Polygons)
+                    Slide 2 (Growing/Shrinking Polygons)
                     Update the polygon transformation matrices based on the new time.
                     Once each polygon grows/shrinks to a certain size, reverse direction
                 */
                 for (let i = 0; i < this.models.slide2.length; i++) {
                     let polygon = this.models.slide2[i];
+                    let current_scale_x = polygon.scale_matrix.values[0][0];
+                    let current_scale_y = polygon.scale_matrix.values[1][1];
+                    //console.log(current_scale_x + " | " + current_scale_y);
 
-                    // Adjust scale factor based on time and direction
-                    polygon.scale_factor += polygon.scale_direction * delta_time * 0.001; // Adjust the scale factor
-
-                    // Check if scaling factor exceeds certain limits to reverse direction
-                    if (polygon.scale_factor >= 2) {
-                        polygon.scale_factor = 2;
-                        polygon.scale_direction = -1; // Reverse direction
-                    } else if (polygon.scale_factor <= 0.5) {
-                        polygon.scale_factor = 0.5;
-                        polygon.scale_direction = 1; // Reverse direction
+                    // Check if scaling factor exceeds set maximum or minimum value
+                    if (current_scale_x >= polygon.maximum_scale_x || current_scale_x <= polygon.minimum_scale_x) {
+                        polygon.scale_direction_x *= -1;
                     }
 
-                    CG.mat3x3Scale(polygon.scale_matrix, polygon.scale_factor, polygon.scale_factor);
+                    if (current_scale_y >= polygon.maximum_scale_y || current_scale_y <= polygon.minimum_scale_y) {
+                        polygon.scale_direction_y *= -1; 
+                    }
+
+                    CG.mat3x3Scale(polygon.scale_matrix, current_scale_x + (polygon.scale_factor_x * polygon.scale_direction_x * delta_time), current_scale_y + (polygon.scale_factor_y * polygon.scale_direction_y * delta_time));
                     CG.mat3x3Translate(polygon.translate_matrix, polygon.position.x, polygon.position.y);
+                    
                 }
                 break;
             case 3:
@@ -419,6 +711,50 @@ class Renderer {
                     CG.mat3x3Translate(this.models.slide3[i].translate_matrix, this.models.slide3[i].position.x, this.models.slide3[i].position.y);
                 }
                 break;
+            case 4:
+                // Triangle, Square, and Hexagon
+                for (let i = 2; i < 5; i++) {
+                    let model = this.models.slide4[i];
+                    CG.mat3x3Rotate(model.rotate_matrix, (time * model.angular_velocity) % (2 * Math.PI));
+                    CG.mat3x3Translate(model.translate_matrix, model.position.x, model.position.y);
+                    CG.mat3x3Scale(model.scale_matrix, 1, 1);
+                }
+
+                // Outer Squares
+                for (let i = 5; i < 7; i++) {
+                    let outer_square = this.models.slide4[i];
+                    let current_scale_x = outer_square.scale_matrix.values[0][0];
+                    let current_scale_y = outer_square.scale_matrix.values[1][1];
+
+                    // Check if scaling factor exceeds set maximum or minimum value
+                    if (current_scale_x >= outer_square.maximum_scale_x || current_scale_x <= outer_square.minimum_scale_x) {
+                        outer_square.scale_direction_x *= -1;
+                    }
+
+                    if (current_scale_y >= outer_square.maximum_scale_y || current_scale_y <= outer_square.minimum_scale_y) {
+                        outer_square.scale_direction_y *= -1; 
+                    }
+                    
+                    CG.mat3x3Rotate(outer_square.rotate_matrix, (time * outer_square.angular_velocity) % (2 * Math.PI));
+                    CG.mat3x3Scale(outer_square.scale_matrix, current_scale_x + (outer_square.scale_factor_x * outer_square.scale_direction_x * delta_time), current_scale_y + (outer_square.scale_factor_y * outer_square.scale_direction_y * delta_time));
+                    CG.mat3x3Translate(outer_square.translate_matrix, outer_square.position.x, outer_square.position.y);
+                }
+
+                let color_settings = this.models.slide4[0];
+                color_settings.wheel_angle = (time * color_settings.wheel_angular_velocity) % (2 * Math.PI);
+                for (let i = 1; i < this.models.slide4.length; i++) {
+                    let current_model = this.models.slide4[i];
+                    let wheel_colors = current_model.color_stops;
+                    for (let i = 0; i < current_model.color_stop_count; i++) {
+                        for (let j = 0; j < 3; j++) {
+                            let scale = Math.random();
+                            wheel_colors[i][j] = Math.floor(wheel_colors[i][j] + (delta_time * current_model.color_shift_velocity * scale)) % 255;
+                        }
+                    }
+                }
+
+            
+                break;
             default:
                 break;
         }
@@ -441,16 +777,21 @@ class Renderer {
             case 3:
                 this.drawSlide3();
                 break;
+            case 4:
+                this.drawSlide4();
+                break;
         }
     }
 
     drawSlide0() {
         // Draw the ball in it's current position
-        const ball = this.models.slide0[0];
-        this.ctx.fillStyle = `rgba(${ball.color})`;
-        this.ctx.beginPath();
-        this.ctx.arc(Math.floor(ball.position.x), Math.floor(ball.position.y), ball.radius, 0, Math.PI * 2);
-        this.ctx.fill();
+        for (let i = 0; i < this.balls.length; i++) {
+            const ball = this.balls[i];
+            this.ctx.fillStyle = `rgba(${ball.color})`;
+            this.ctx.beginPath();
+            this.ctx.arc(Math.floor(ball.position.x), Math.floor(ball.position.y), ball.radius, 0, Math.PI * 2);
+            this.ctx.fill();
+        } 
     }
 
     //
@@ -466,9 +807,6 @@ class Renderer {
 
     //
     drawSlide2() {
-        // TODO: draw at least 2 polygons grow and shrink about their own centers
-        //   - have each polygon grow / shrink different sizes
-        //   - try at least 1 polygon that grows / shrinks non-uniformly in the x and y directions
         for (let i = 0; i < this.models.slide2.length; i++) {
             let renderedPolygon = [];
             for (let j = 0; j < this.models.slide2[i].vertices.length; j++) {
@@ -480,9 +818,6 @@ class Renderer {
 
     //
     drawSlide3() {
-        // TODO: get creative!
-        //   - animation should involve all three basic transformation types
-        //     (translation, scaling, and rotation)
         this.ctx.drawImage(this.image, 5, (this.canvas.height - this.canvas.height / 3) / 2, this.canvas.width / 4.5, this.canvas.height / 3);
 
         // Draw the body
@@ -538,10 +873,58 @@ class Renderer {
 
     }
 
+    drawSlide4() {
+        this.ctx.beginPath();
+        this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fill();
+
+        let renderedPolygon = [];
+        for (let i = this.models.slide4.length - 1; i >= 1; i--) {
+            let model = this.models.slide4[i];
+            if (i != 1) {
+                for (let j = 0; j < this.models.slide4[i].vertices.length; j++) {
+                    renderedPolygon.push(Matrix.multiply([model.translate_matrix, model.scale_matrix, model.rotate_matrix, model.vertices[j]]));
+                }
+            }
+            
+            let gradient = this.ctx.createConicGradient(this.models.slide4[0].wheel_angle, this.canvas.width/2, this.canvas.height/2);
+            let colors = model.color_stops;
+            let stop_increment = 1.0 / (model.color_stop_count - 1);
+            for (let j = 0; j <  model.color_stop_count; j++) {
+                gradient.addColorStop(stop_increment * j, `rgba(${colors[j][0]}, ${colors[j][1]}, ${colors[j][2]}, 255)`);
+            }
+            this.ctx.fillStyle = gradient;
+
+            if (i == 1) {
+                this.ctx.beginPath();
+                this.ctx.arc(this.canvas.width / 2, this.canvas.height / 2, 50, 0, Math.PI * 2);
+                this.ctx.fill();
+            } else {
+                this.drawConvexPolygonRainbow(renderedPolygon);
+            }
+
+            renderedPolygon = [];
+        }
+    }
+
     // vertex_list:  array of object [Matrix(3, 1), Matrix(3, 1), ..., Matrix(3, 1)]
     // color:        array of int [R, G, B, A]
     drawConvexPolygon(vertex_list, color) {
         this.ctx.fillStyle = 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',' + (color[3] / 255) + ')';
+        this.ctx.beginPath();
+        let x = vertex_list[0].values[0][0] / vertex_list[0].values[2][0];
+        let y = vertex_list[0].values[1][0] / vertex_list[0].values[2][0];
+        this.ctx.moveTo(x, y);
+        for (let i = 1; i < vertex_list.length; i++) {
+            x = vertex_list[i].values[0][0] / vertex_list[i].values[2][0];
+            y = vertex_list[i].values[1][0] / vertex_list[i].values[2][0];
+            this.ctx.lineTo(x, y);
+        }
+        this.ctx.closePath();
+        this.ctx.fill();
+    }
+
+    drawConvexPolygonRainbow(vertex_list) {
         this.ctx.beginPath();
         let x = vertex_list[0].values[0][0] / vertex_list[0].values[2][0];
         let y = vertex_list[0].values[1][0] / vertex_list[0].values[2][0];

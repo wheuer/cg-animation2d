@@ -14,11 +14,13 @@ let app = createApp({
                 'Bouncing Ball',
                 'Spinning Polygons',
                 'Grow / Shrink',
-                'Fun!'
+                'Fun!',
+                'Double the Fun!'
             ]),
             slide_idx: ref(0),
             limit_fps: ref(false),
-            fps: ref(10)
+            fps: ref(10),
+            ball_count: ref(1)
         };
     },
 
@@ -28,6 +30,9 @@ let app = createApp({
         },
         fps(new_value, old_value) {
             this.renderer.setFps(parseInt(new_value));
+        },
+        ball_count(new_value, old_value) {
+            this.renderer.setBallCount(parseInt(new_value));
         }
     },
 
@@ -48,7 +53,7 @@ let app = createApp({
     }
 }).mount('#content');
     
-app.renderer = new Renderer(app.view, app.limit_fps, app.fps);
+app.renderer = new Renderer(app.view, app.limit_fps, app.fps, app.ball_count);
 window.requestAnimationFrame((timestamp) => {
     app.renderer.animate(timestamp);
 });
